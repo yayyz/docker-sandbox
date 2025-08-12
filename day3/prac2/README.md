@@ -1,9 +1,11 @@
 # 실습 #2
 ### 목표
-Python Flask 애플리케이션이 Redis 캐시 서버와 통신 할 수 있도록 이 두서비스를 docker-compose로 실행해주세요!
+- Python Flask 애플리케이션이 Redis 캐시 서버와 통신 할 수 있도록 이 두서비스를 docker-compose로 실행해주세요!
+- **`docker-compose.yml 파일을 개발 후, Pull Request로 작업물을 올려주세요.`**
 
 ### 요구사항 
 Python Flask App:
+- 동작 코드는 /app 디렉토리 하위 app.py입니다. **`해당 코드를 수정할 필요는 없습니다.`**
 - redis의 상태에 의존되도록 설정해주세요
 - 내부포트: 5000
 - 볼륨 마운트: /app
