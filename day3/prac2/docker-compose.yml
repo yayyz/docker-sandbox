@@ -1,1 +1,28 @@
-# 코드를 추가해주세요
+services:
+  web:
+    port:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    command: sh -c "pip install flask redis && python app.py"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:latest
+    port:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      start_interval: 5s
+    volumes:
+      - redis_data:/data
+
+
+volumes:
+  redis_data:
