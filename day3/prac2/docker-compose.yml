@@ -1,1 +1,28 @@
 # 코드를 추가해주세요
+name: compose-test
+services:
+  webapp:
+    image: python:3.13-slim
+    container_name: flask-app
+    ports:
+      - "8080:5000"
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    command: sh -c "pip install --no-cache-dir flask redis && python app.py"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  redis:
+    image: redis:7.0
+    container_name: redis-db
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: [ 'CMD', 'redis-cli', 'ping' ]
+      interval: 5s
+      timeout: 3s
+      retries: 3
