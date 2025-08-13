@@ -1,1 +1,33 @@
-# 코드를 추가해주세요
+version: '3.8'
+
+services:
+  flask-app:
+    image: python:3.9-alpine
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    command: sh -c "pip install flask redis && python app.py"
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  redis_data:
