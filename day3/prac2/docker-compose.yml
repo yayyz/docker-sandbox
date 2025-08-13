@@ -1,1 +1,37 @@
-# 코드를 추가해주세요
+services:
+  python:
+    image: python:3.11-slim
+    container_name: flask-app
+    working_dir: /app
+    command: >
+      sh -c "pip install --no-cache-dir flask redis &&
+             python app.py"
+    volumes:
+      - ./:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - FLASK_RUN_HOST=0.0.0.0
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: ["redis-server","--appendonly","yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 3s
+
+volumes:
+  redis-data:
