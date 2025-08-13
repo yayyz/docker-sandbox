@@ -1,9 +1,11 @@
 services:
   web:
-    port:
+    image: python:3.9-slim
+    ports:
       - "5000:5000"
     volumes:
-      - .:/app
+      - ./app:/app
+    working_dir: /app
     command: sh -c "pip install flask redis && python app.py"
     depends_on:
       redis:
@@ -11,14 +13,14 @@ services:
 
   redis:
     image: redis:latest
-    port:
+    ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 1m30s
-      timeout: 10s
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
       retries: 3
-      start_period: 40s
+      start_period: 5s
       start_interval: 5s
     volumes:
       - redis_data:/data
