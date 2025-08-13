@@ -1,37 +1,27 @@
+name: compose-test
 services:
-  python:
-    image: python:3.11-slim
+  webapp:
+    image: python:3.13-slim
     container_name: flask-app
-    working_dir: /app
-    command: >
-      sh -c "pip install --no-cache-dir flask redis &&
-             python app.py"
-    volumes:
-      - ./:/app
     ports:
-      - "5000:5000"
+      - "8080:5000"
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    command: sh -c "pip install --no-cache-dir flask redis && python app.py"
     depends_on:
       redis:
         condition: service_healthy
-    environment:
-      - FLASK_RUN_HOST=0.0.0.0
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
 
   redis:
-    image: redis:7-alpine
-    container_name: redis
-    command: ["redis-server","--appendonly","yes"]
+    image: redis:7.0
+    container_name: redis-db
     ports:
       - "6379:6379"
     volumes:
-      - redis-data:/data
+      - ./data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: [ 'CMD', 'redis-cli', 'ping' ]
       interval: 5s
       timeout: 3s
-      retries: 5
-      start_period: 3s
-
-volumes:
-  redis-data:
+      retries: 3
