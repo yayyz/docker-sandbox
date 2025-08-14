@@ -1,4 +1,10 @@
 <<<<<<< HEAD
+FROM golang:1.24
+WORKDIR /src
+COPY ./main.go .
+RUN go build -o /bin/hello ./main.go
+CMD ["/bin/hello"]
+=======
 FROM golang:1.24 AS builder
 WORKDIR /src
 COPY ./main.go .
@@ -11,10 +17,4 @@ RUN GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
 FROM scratch
 COPY --from=builder /src/hello /hello
 ENTRYPOINT ["/hello"]
-=======
-FROM golang:1.24
-WORKDIR /src
-COPY ./main.go .
-RUN go build -o /bin/hello ./main.go
-CMD ["/bin/hello"]
->>>>>>> fe4d2c6 (day4-prac1 files added)
+>>>>>>> 77187a3 (single multi compare - 권지은)
